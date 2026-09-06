@@ -57,6 +57,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase repository name
+        run: |
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
           
       - name: Build and Push Image
         uses: docker/build-push-action@v5
@@ -64,7 +68,7 @@ jobs:
           context: .
           push: true
           # GitHub usernames and repo names must be lowercase
-          tags: ghcr.io/${{ format('{0}/bmb-devops:latest', github.repository) | lower }}
+          tags: ghcr.io/${{ env.REPO_LC }}/bmb-devops:latest
           # Pulls cache from GitHub Actions infrastructure
           cache-from: type=gha
           # Pushes new cache to GitHub Actions infrastructure
